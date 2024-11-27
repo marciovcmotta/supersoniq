@@ -1,71 +1,175 @@
-### Sprint 1: Project Setup and Core Structure (1 week)
+## **Sprint 1: Environment Setup and Basic Infrastructure (Week 1)**
 
-* **Goal:** Set up the development environment, establish the basic project structure, and implement fundamental components like logging and configuration.
+### **Goal**:
+Set up the development environment, project structure, and core dependencies. Implement the foundation of the messaging system.
 
-* **Tasks:**
-    * Set up Node.js and npm development environment.
-    * Initialize the project repository on GitHub and configure CI/CD (if desired).
-    * Create the basic project structure with appropriate directories (e.g., `src`, `test`).
-    * Choose a logging library (e.g., Winston) and integrate it into the project.
-    * Implement basic configuration handling (e.g., using environment variables or a configuration file).
-    * Set up a basic web server using Express.js.
-    * Create a simple "hello world" endpoint to test the server.
-    * Write unit tests for basic server functionality.
-    * Begin drafting initial documentation in the README.
+### **Tasks**:
+1. **Environment Setup**:
+   - Install Node.js and npm.
+   - Install a code editor like Visual Studio Code.
+   - Configure TypeScript in the project:
+     ```bash
+     npm install typescript ts-node @types/node --save-dev
+     npx tsc --init
+     ```
+   - Initialize the project:
+     ```bash
+     npm init -y
+     ```
+     
+2. **Project Dependencies**:
+   - Install core dependencies:
+     ```bash
+     npm install fastify fastify-websocket sqlite3
+     npm install @fastify/http2 --save
+     ```
+   - Set up ESLint and Prettier for consistent code formatting.
+
+3. **Basic Project Structure**:
+   - Create folders:
+     ```
+     src/
+       ├── server.ts (entry point)
+       ├── routes/
+       ├── controllers/
+       ├── utils/
+       └── models/
+     ```
+   - Implement a basic Fastify server:
+     ```typescript
+     import fastify from 'fastify';
+
+     const server = fastify({ logger: true });
+
+     server.get('/', async (request, reply) => {
+       reply.send({ message: 'SupersoniQ is running!' });
+     });
+
+     server.listen({ port: 3000 }, (err) => {
+       if (err) {
+         console.error(err);
+         process.exit(1);
+       }
+       console.log('Server running on http://localhost:3000');
+     });
+     ```
+
+4. **WebSocket Integration**:
+   - Add WebSocket support to the Fastify server.
+   - Create a test route for sending/receiving WebSocket messages.
+
+5. **HTTP/2 Setup**:
+   - Configure Fastify to use HTTP/2 with HTTPS or h2c (HTTP/2 without encryption).
+   - Verify basic HTTP/2 functionality.
+
+6. **Version Control**:
+   - Set up a Git repository.
+   - Push the initial codebase to GitHub.
 
 ---
-### Sprint 2: WebSocket Integration and AMQP Connection (2 weeks)
 
-* **Goal:** Integrate WebSockets for real-time communication and establish a connection with the AMQP broker.
+## **Sprint 2: Core Messaging Features (Week 2)**
 
-* **Tasks:**
-    * Choose a WebSocket library (e.g., `ws`) and integrate it with the server.
-    * Implement WebSocket handshake and basic message handling.
-    * Choose an AMQP client library (e.g., `amqplib`) and establish a connection to a RabbitMQ server.
-    * Implement basic AMQP operations (e.g., connect, disconnect).
-    * Write unit tests for WebSocket and AMQP connection functionalities.
+### **Goal**:
+Implement the core messaging system, focusing on in-memory message handling and real-time communication.
 
----
-### Sprint 3:  Publish/Subscribe and Basic Queue Operations (2 weeks)
+### **Tasks**:
+1. **In-Memory Queue**:
+   - Develop a class to manage in-memory message storage (e.g., using `Map` or `Queue`).
+   - Implement methods for:
+     - Enqueuing messages.
+     - Dequeuing messages.
+     - Viewing all messages.
 
-* **Goal:**  Enable core messaging functionality with basic publishing, consuming, and queue management.
+2. **Message API**:
+   - Create REST endpoints for:
+     - Publishing messages (`POST /messages`).
+     - Retrieving messages (`GET /messages`).
 
-* **Tasks:**
-    * Implement message publishing to queues via WebSockets and AMQP.
-    * Implement message consumption from queues via WebSockets and AMQP.
-    * Implement basic queue operations (create, delete, list).
-    * Write unit and integration tests for publishing and consuming messages.
-    * Update README with basic connection, publishing, and consuming examples.
+3. **WebSocket Communication**:
+   - Extend WebSocket integration to broadcast messages to all connected clients.
+   - Implement a simple protocol for clients to send/receive messages.
 
----
-### Sprint 4:  Message Acknowledgment and Persistence (2 weeks)
+4. **Testing**:
+   - Write unit tests for in-memory storage and REST endpoints using tools like Jest.
 
-* **Goal:**  Enhance message handling with acknowledgment and introduce message persistence.
-
-* **Tasks:**
-    * Implement message acknowledgment mechanisms (ack, nack, reject).
-    * Introduce a simple persistence mechanism (e.g., file-based or using a database like MongoDB) for messages.
-    * Implement error handling and logging for improved debugging.
-    * Refactor code for better organization and maintainability.
-    * Conduct thorough testing (unit and integration) for persistence and error handling.
+5. **Documentation**:
+   - Update the README with setup instructions and usage examples for the messaging API.
 
 ---
-### Sprint 5:  Advanced Features and Polish (2 weeks)
 
-* **Goal:** Add more advanced AMQP features and refine the application for deployment.
+## **Sprint 3: Persistence and Scalability (Week 3)**
 
-* **Tasks:**
-    * Implement exchange support (e.g., direct, fanout) for message routing.
-    * Implement dead-letter queues for handling unroutable messages.
-    * Add support for message properties (e.g., headers, delivery mode).
-    * Optimize performance for message handling and throughput.
-    * Create a Dockerfile for containerization and deployment.
-    * Update documentation with advanced usage examples and deployment instructions.
+### **Goal**:
+Add optional SQLite persistence and introduce features for scaling and reliability.
+
+### **Tasks**:
+1. **SQLite Integration**:
+   - Set up SQLite as an optional persistence layer.
+   - Create a table for storing messages with fields like `id`, `sender`, `recipient`, `content`, and `status`.
+   - Develop methods for:
+     - Storing messages in SQLite.
+     - Retrieving messages from SQLite.
+
+2. **Dynamic Configuration**:
+   - Allow users to configure whether to use in-memory storage or SQLite via environment variables or a config file.
+
+3. **Error Handling**:
+   - Add comprehensive error handling for API routes and WebSocket events.
+
+4. **Scalability**:
+   - Investigate and document the potential integration of Redis for distributed in-memory storage.
+   - Implement basic Redis integration for testing scalability.
+
+5. **Performance Testing**:
+   - Simulate message load to evaluate performance.
+   - Optimize memory usage and query efficiency for SQLite.
 
 ---
-### Future Sprints (Beyond MVP):
 
-* Explore clustering and high availability for production deployments.
-* Implement user authentication and authorization.
-* Add a management interface (e.g., a web UI or CLI) for monitoring and administration.
-* Develop client libraries in various programming languages (e.g., Python, Java) for easier integration.
+## **Sprint 4: Advanced Features and Finalization (Week 4)**
+
+### **Goal**:
+Polish the project by adding advanced features, refining the codebase, and preparing for deployment.
+
+### **Tasks**:
+1. **Real-Time Enhancements**:
+   - Implement **HTTP/2 server push** for message notifications.
+   - Add support for prioritizing messages in the queue.
+
+2. **Authentication**:
+   - Add basic token-based authentication (e.g., using JSON Web Tokens).
+   - Secure WebSocket connections with authentication.
+
+3. **Monitoring and Metrics**:
+   - Implement basic logging for message handling.
+   - Expose metrics (e.g., total messages processed, current queue size) via an API endpoint.
+
+4. **Client Library (Optional)**:
+   - Develop a lightweight client library (in JavaScript/TypeScript) to simplify integration with SupersoniQ.
+
+5. **Deployment**:
+   - Set up deployment pipelines using Docker:
+     - Create a `Dockerfile` for the application.
+     - Write a `docker-compose.yml` file to include SQLite (if needed).
+   - Deploy to a platform like AWS, DigitalOcean, or Heroku.
+
+6. **Final Documentation**:
+   - Write comprehensive documentation for:
+     - Setting up and running SupersoniQ.
+     - Configuring persistence and scaling options.
+     - API and WebSocket usage.
+
+7. **Release**:
+   - Tag the first release (`v1.0.0`) on GitHub.
+
+---
+
+## **Timeline**
+
+| **Week** | **Milestones**                                   |
+|----------|--------------------------------------------------|
+| Week 1   | Environment setup, Fastify HTTP/2 server, WebSockets |
+| Week 2   | Core messaging features (in-memory storage, API, WebSocket broadcasting) |
+| Week 3   | SQLite persistence, dynamic configuration, basic scalability testing |
+| Week 4   | Real-time enhancements, authentication, monitoring, deployment |
