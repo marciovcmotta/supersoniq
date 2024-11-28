@@ -1,175 +1,172 @@
-## **Sprint 1: Environment Setup and Basic Infrastructure (Week 1)**
+## **Sprint 1: Environment Setup and Basic Infrastructure**
 
 ### **Goal**:
-Set up the development environment, project structure, and core dependencies. Implement the foundation of the messaging system.
+Establish the development environment, project structure, and core dependencies. Implement the foundational HTTP/2 server.
 
 ### **Tasks**:
+
 1. **Environment Setup**:
-   - Install Node.js and npm.
-   - Install a code editor like Visual Studio Code.
-   - Configure TypeScript in the project:
-     ```bash
-     npm install typescript ts-node @types/node --save-dev
-     npx tsc --init
-     ```
+   - Install **Node.js** and **npm**.
+   - Set up a code editor (e.g., **Visual Studio Code**).
    - Initialize the project:
      ```bash
      npm init -y
      ```
-     
+   - Install and configure **TypeScript**:
+     ```bash
+     npm install typescript ts-node @types/node --save-dev
+     npx tsc --init
+     ```
+
 2. **Project Dependencies**:
    - Install core dependencies:
      ```bash
-     npm install fastify fastify-websocket sqlite3
-     npm install @fastify/http2 --save
+     npm install fastify @fastify/http2
      ```
-   - Set up ESLint and Prettier for consistent code formatting.
+   - Set up **ESLint** and **Prettier** for code quality and consistency.
 
-3. **Basic Project Structure**:
-   - Create folders:
+3. **Project Structure**:
+   - Create the following directory structure:
      ```
      src/
-       ├── server.ts (entry point)
-       ├── routes/
-       ├── controllers/
-       ├── utils/
-       └── models/
+     ├── server.ts
+     ├── routes/
+     ├── controllers/
+     ├── utils/
+     └── models/
      ```
-   - Implement a basic Fastify server:
+   - Implement a basic **Fastify** server with **HTTP/2** enabled:
      ```typescript
      import fastify from 'fastify';
 
-     const server = fastify({ logger: true });
+     const server = fastify({ http2: true, logger: true });
 
      server.get('/', async (request, reply) => {
-       reply.send({ message: 'SupersoniQ is running!' });
+       reply.send({ message: 'SupersoniQ is running with HTTP/2!' });
      });
 
-     server.listen({ port: 3000 }, (err) => {
+     server.listen(3000, (err) => {
        if (err) {
-         console.error(err);
+         server.log.error(err);
          process.exit(1);
        }
-       console.log('Server running on http://localhost:3000');
+       console.log('Server running on https://localhost:3000');
      });
      ```
 
-4. **WebSocket Integration**:
-   - Add WebSocket support to the Fastify server.
-   - Create a test route for sending/receiving WebSocket messages.
-
-5. **HTTP/2 Setup**:
-   - Configure Fastify to use HTTP/2 with HTTPS or h2c (HTTP/2 without encryption).
-   - Verify basic HTTP/2 functionality.
-
-6. **Version Control**:
-   - Set up a Git repository.
-   - Push the initial codebase to GitHub.
+4. **Version Control**:
+   - Initialize a **Git** repository.
+   - Create a remote repository on **GitHub** and push the initial codebase.
 
 ---
 
-## **Sprint 2: Core Messaging Features (Week 2)**
+## **Sprint 2: Core Messaging Functionality**
 
 ### **Goal**:
-Implement the core messaging system, focusing on in-memory message handling and real-time communication.
+Develop the core messaging features, focusing on in-memory message handling and RESTful API endpoints.
 
 ### **Tasks**:
-1. **In-Memory Queue**:
-   - Develop a class to manage in-memory message storage (e.g., using `Map` or `Queue`).
+
+1. **In-Memory Message Queue**:
+   - Develop a module to manage in-memory message storage using appropriate data structures (e.g., `Map` or `Queue`).
    - Implement methods for:
-     - Enqueuing messages.
-     - Dequeuing messages.
-     - Viewing all messages.
+     - Adding messages to the queue.
+     - Retrieving and removing messages from the queue.
+     - Viewing current messages in the queue.
 
-2. **Message API**:
-   - Create REST endpoints for:
-     - Publishing messages (`POST /messages`).
-     - Retrieving messages (`GET /messages`).
+2. **RESTful API Endpoints**:
+   - Create endpoints for:
+     - **Publishing messages**: `POST /messages`
+     - **Retrieving messages**: `GET /messages`
+   - Ensure endpoints utilize **HTTP/2** features for efficient communication.
 
-3. **WebSocket Communication**:
-   - Extend WebSocket integration to broadcast messages to all connected clients.
-   - Implement a simple protocol for clients to send/receive messages.
+3. **Testing**:
+   - Write unit tests for the in-memory queue and API endpoints using a testing framework like **Jest**.
+
+4. **Documentation**:
+   - Update the README with instructions on setting up the server and using the API endpoints.
+
+---
+
+## **Sprint 3: Optional WebSocket Support and Data Persistence**
+
+### **Goal**:
+Implement optional support for WebSockets and data persistence using LevelDB, configurable based on user requirements.
+
+### **Tasks**:
+
+1. **WebSocket Integration (Optional)**:
+   - Install the WebSocket plugin for Fastify:
+     ```bash
+     npm install @fastify/websocket
+     ```
+   - Configure the server to support WebSocket connections when enabled in the configuration.
+   - Develop handlers for WebSocket events to facilitate real-time messaging.
+
+2. **LevelDB Integration (Optional)**:
+   - Install LevelDB:
+     ```bash
+     npm install level
+     ```
+   - Create a module to interface with LevelDB for message storage.
+   - Implement methods for:
+     - Storing messages persistently.
+     - Retrieving messages from the database.
+     - Managing database connections and ensuring data integrity.
+
+3. **Configuration Management**:
+   - Develop a configuration system (e.g., using environment variables or a config file) to enable or disable WebSocket support and data persistence.
+   - Ensure the server initializes components based on the configuration settings.
 
 4. **Testing**:
-   - Write unit tests for in-memory storage and REST endpoints using tools like Jest.
+   - Write tests to verify the functionality of WebSocket communication and LevelDB persistence.
 
 5. **Documentation**:
-   - Update the README with setup instructions and usage examples for the messaging API.
+   - Update the README with instructions on configuring WebSocket support and data persistence.
 
 ---
 
-## **Sprint 3: Persistence and Scalability (Week 3)**
+## **Sprint 4: Advanced Features and Deployment**
 
 ### **Goal**:
-Add optional SQLite persistence and introduce features for scaling and reliability.
+Enhance the system with advanced features, optimize performance, and prepare for deployment.
 
 ### **Tasks**:
-1. **SQLite Integration**:
-   - Set up SQLite as an optional persistence layer.
-   - Create a table for storing messages with fields like `id`, `sender`, `recipient`, `content`, and `status`.
-   - Develop methods for:
-     - Storing messages in SQLite.
-     - Retrieving messages from SQLite.
 
-2. **Dynamic Configuration**:
-   - Allow users to configure whether to use in-memory storage or SQLite via environment variables or a config file.
+1. **Advanced Messaging Features**:
+   - Implement message prioritization within the queue.
+   - Develop mechanisms for message acknowledgment and retries.
 
-3. **Error Handling**:
-   - Add comprehensive error handling for API routes and WebSocket events.
+2. **Security Enhancements**:
+   - Implement authentication and authorization for API endpoints and WebSocket connections.
+   - Ensure secure communication channels (e.g., using TLS/SSL).
 
-4. **Scalability**:
-   - Investigate and document the potential integration of Redis for distributed in-memory storage.
-   - Implement basic Redis integration for testing scalability.
+3. **Monitoring and Logging**:
+   - Integrate logging mechanisms to track system performance and errors.
+   - Set up monitoring tools to observe system metrics and health.
 
-5. **Performance Testing**:
-   - Simulate message load to evaluate performance.
-   - Optimize memory usage and query efficiency for SQLite.
+4. **Performance Optimization**:
+   - Conduct load testing to assess system performance under various conditions.
+   - Optimize code and configurations to handle high-throughput scenarios.
 
----
-
-## **Sprint 4: Advanced Features and Finalization (Week 4)**
-
-### **Goal**:
-Polish the project by adding advanced features, refining the codebase, and preparing for deployment.
-
-### **Tasks**:
-1. **Real-Time Enhancements**:
-   - Implement **HTTP/2 server push** for message notifications.
-   - Add support for prioritizing messages in the queue.
-
-2. **Authentication**:
-   - Add basic token-based authentication (e.g., using JSON Web Tokens).
-   - Secure WebSocket connections with authentication.
-
-3. **Monitoring and Metrics**:
-   - Implement basic logging for message handling.
-   - Expose metrics (e.g., total messages processed, current queue size) via an API endpoint.
-
-4. **Client Library (Optional)**:
-   - Develop a lightweight client library (in JavaScript/TypeScript) to simplify integration with SupersoniQ.
-
-5. **Deployment**:
-   - Set up deployment pipelines using Docker:
-     - Create a `Dockerfile` for the application.
-     - Write a `docker-compose.yml` file to include SQLite (if needed).
-   - Deploy to a platform like AWS, DigitalOcean, or Heroku.
+5. **Deployment Preparation**:
+   - Create a **Dockerfile** to containerize the application.
+   - Set up deployment pipelines using tools like **Docker Compose** or **Kubernetes**.
+   - Deploy the application to a cloud platform (e.g., **AWS**, **Azure**, **Heroku**).
 
 6. **Final Documentation**:
-   - Write comprehensive documentation for:
-     - Setting up and running SupersoniQ.
-     - Configuring persistence and scaling options.
-     - API and WebSocket usage.
+   - Provide comprehensive documentation covering setup, configuration, usage, and troubleshooting.
 
 7. **Release**:
-   - Tag the first release (`v1.0.0`) on GitHub.
+   - Tag the stable release (e.g., `v1.0.0`) and publish it on GitHub.
 
 ---
 
-## **Timeline**
+## **Timeline Overview**
 
-| **Week** | **Milestones**                                   |
-|----------|--------------------------------------------------|
-| Week 1   | Environment setup, Fastify HTTP/2 server, WebSockets |
-| Week 2   | Core messaging features (in-memory storage, API, WebSocket broadcasting) |
-| Week 3   | SQLite persistence, dynamic configuration, basic scalability testing |
-| Week 4   | Real-time enhancements, authentication, monitoring, deployment |
+| **Week** | **Milestones**                                                                                  |
+|----------|-------------------------------------------------------------------------------------------------|
+| Week 1   | Environment setup, Fastify server with HTTP/2, project scaffolding                              |
+| Week 2   | In-memory message queue, RESTful API endpoints, initial testing and documentation               |
+| Week 3   | Optional WebSocket support, LevelDB integration, configuration management, extended testing     |
+| Week 4   | Advanced features (e.g., message prioritization), security enhancements, performance optimization, deployment, final documentation, and release |
