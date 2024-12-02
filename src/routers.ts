@@ -1,11 +1,12 @@
 import { FastifyInstance } from 'fastify';
-import WelcomeController from './controllers/WelcomeController';
+import StatusController from './controllers/StatusController';
+import MessageController from './controllers/MessageController';
 
 const router = (app : FastifyInstance) => {
-    app.get('/', WelcomeController.getServerStatus);
+    app.get('/', StatusController.getServerStatus);
 
-    // app.get('/messages', MessageController.getMessages);
-    // app.post('/messages', MessageController.postMessage);
+    app.get('/messages', MessageController.popMessage); // get message from queue
+    app.post('/messages', MessageController.pushMessage); // add message to queue
 }
 
 export default router;
